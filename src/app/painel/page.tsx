@@ -1,12 +1,13 @@
 import { SideMenu } from "@/components/common/sidemenu";
-import { Button } from "@/components/ui/button";
 
-export default function Home() {
+export default function Painel() {
   return (
     <div className="flex min-h-screen">
+      <SideMenu />
+
       <main className="flex-1 p-6 md:ml-0">
-        <div className="mx-auto max-w-4xl">
-          <h1 className="mb-6 text-3xl font-bold">Home</h1>
+        <div className="mx-auto max-w-7xl">
+          <h1 className="mb-6 text-3xl font-bold">Painel</h1>
         </div>
       </main>
     </div>
