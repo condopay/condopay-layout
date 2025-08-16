@@ -63,18 +63,13 @@ export function SideMenu({ className }: SideMenuProps) {
       {/* Side menu */}
       <aside
         className={cn(
-          "bg-background fixed top-0 left-0 z-40 h-full w-64 border-r transition-transform duration-300 ease-in-out md:h-auto",
+          "bg-background fixed top-0 left-0 z-40 h-full w-64 transition-transform duration-300 ease-in-out md:h-auto",
           "md:static md:z-auto md:translate-x-0",
           isOpen ? "translate-x-0" : "-translate-x-full",
           className,
         )}
       >
         <div className="flex h-full flex-col">
-          {/* Header */}
-          <div className="flex justify-center border-b">
-            <Image src="/logo.svg" alt="CONDOPAY" width={100} height={100} />
-          </div>
-
           {/* Navigation */}
           <nav className="flex-1 p-4">
             <ul className="space-y-2">
@@ -98,7 +93,7 @@ export function SideMenu({ className }: SideMenuProps) {
           </nav>
 
           {/* Footer */}
-          <div className="border-t p-4">
+          <div className="p-4">
             <p className="text-muted-foreground text-sm">
               © 2025 CondoPay - Todos os direitos reservados
             </p>

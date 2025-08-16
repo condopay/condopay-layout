@@ -1,8 +1,10 @@
+import Header from "@/components/common/Header";
 import { SideMenu } from "@/components/common/sidemenu";
 
 const CondominioPage = () => {
   return (
     <div className="flex min-h-screen">
+      <Header />
       <SideMenu />
       <main className="flex-1 p-6 md:ml-0">
         <div className="mx-auto max-w-4xl">
