@@ -1,16 +1,9 @@
-import { SideMenu } from "@/components/common/sidemenu";
+import Layout from "@/components/common/layout";
 
-const ContasAReceberPage = () => {
+export default function ContasAReceberPage() {
   return (
-    <div className="flex min-h-screen">
-      <SideMenu />
-      <main className="flex-1 p-6 md:ml-0">
-        <div className="mx-auto max-w-4xl">
-          <h1 className="mb-6 text-3xl font-bold">Contas a Receber</h1>
-        </div>
-      </main>
-    </div>
+    <Layout>
+      <h1>Contas a Receber</h1>
+    </Layout>
   );
-};
-
-export default ContasAReceberPage;
+}

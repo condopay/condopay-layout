@@ -1,16 +1,9 @@
-import { SideMenu } from "@/components/common/sidemenu";
+import Layout from "@/components/common/layout";
 
-const ConfiguracoesPage = () => {
+export default function ConfiguracoesPage() {
   return (
-    <div className="flex min-h-screen">
-      <SideMenu />
-      <main className="flex-1 p-6 md:ml-0">
-        <div className="mx-auto max-w-4xl">
-          <h1 className="mb-6 text-3xl font-bold">Configurações</h1>
-        </div>
-      </main>
-    </div>
+    <Layout>
+      <h1>Configurações</h1>
+    </Layout>
   );
-};
-
-export default ConfiguracoesPage;
+}
