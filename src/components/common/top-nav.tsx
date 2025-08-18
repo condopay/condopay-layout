@@ -14,8 +14,8 @@ import Profile01 from "./profile-01";
 
 export default function TopNav() {
   return (
-    <nav className="flex h-full items-center justify-between border-b border-gray-200 bg-white px-3 sm:px-6 dark:border-[#1F1F23] dark:bg-[#0F0F12]">
-      <div className="hidden max-w-[300px] items-center space-x-1 truncate rounded-md border border-gray-200 bg-white text-sm font-medium sm:flex">
+    <nav className="flex h-full items-center justify-end bg-white px-3 sm:px-6 lg:justify-between dark:border-[#1F1F23] dark:bg-[#0F0F12]">
+      <div className="hidden max-w-[300px] items-center space-x-1 truncate rounded-md border border-gray-200 bg-white text-sm font-medium lg:flex">
         <Input type="text" placeholder="Acesso Rápido" className="w-2xl" />
       </div>
       <div className="ml-auto flex items-center gap-4 sm:ml-0">

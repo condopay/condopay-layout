@@ -1,11 +1,16 @@
 "use client";
 
-import { BarChart2, Home, LogOut, type LucideIcon, Menu } from "lucide-react";
+import { Building2, Home, LogOut, type LucideIcon, Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
 import { Button } from "../ui/button";
+
+const navItems = [
+  { href: "/painel", icon: Home, label: "Painel Gerencial" },
+  { href: "/condominio", icon: Building2, label: "Condomínios" },
+];
 
 export default function Sidebar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -49,7 +54,7 @@ export default function Sidebar() {
       >
         <div className="flex h-full flex-col">
           <Link
-            href="https://kokonutui.com/"
+            href="/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex h-16 items-center justify-center border-b border-gray-200 px-6 dark:border-[#1F1F23]"
@@ -67,12 +72,11 @@ export default function Sidebar() {
             <div className="space-y-6">
               <div>
                 <div className="space-y-1">
-                  <NavItem href="#" icon={Home}>
-                    Painel Gerencial
-                  </NavItem>
-                  <NavItem href="#" icon={BarChart2}>
-                    Condomínios
-                  </NavItem>
+                  {navItems.map((item) => (
+                    <NavItem key={item.href} href={item.href} icon={item.icon}>
+                      {item.label}
+                    </NavItem>
+                  ))}
                 </div>
               </div>
             </div>
