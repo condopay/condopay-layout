@@ -4,7 +4,7 @@ Um projeto de layout moderno construído com Next.js, React, TypeScript, Tailwin
 
 ## 🌐 Demonstração
 
-**Site em produção:** [https://condopay-layout.vercel.app/condominio](https://condopay-layout.vercel.app/condominio)
+**Site em produção:** [https://condopay-layout.vercel.app/condominium](https://condopay-layout.vercel.app/condominium)
 
 ![CondoPay Website](public/website.png)
 
