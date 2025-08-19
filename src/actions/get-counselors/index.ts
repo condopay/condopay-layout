@@ -5,18 +5,18 @@ export async function getCounselors({ buildingId }: GetCounselorsSchema) {
     {
       id: "1",
       name: "John Doe",
-      avatar: "/condominio.png",
+      avatar: "/user.png",
     },
     {
       id: "2",
       name: "Jane Doe",
-      avatar: "/condominio.png",
+      avatar: "/user.png",
     },
 
     {
       id: "3",
       name: "John Smith",
-      avatar: "/condominio.png",
+      savatar: "/user.png",
     },
   ];
 

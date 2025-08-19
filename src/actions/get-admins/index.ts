@@ -5,17 +5,17 @@ export async function getAdmins({ buildingId }: GetAdminsSchema) {
     {
       id: "1",
       name: "John Doe",
-      avatar: "/condominio.png",
+      avatar: "/user.png",
     },
     {
       id: "2",
       name: "Jane Doe",
-      avatar: "/condominio.png",
+      avatar: "/user.png",
     },
     {
       id: "3",
       name: "John Smith",
-      avatar: "/condominio.png",
+      avatar: "/user.png",
     },
   ];
 

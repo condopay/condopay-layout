@@ -7,7 +7,7 @@ export async function getBuildingManager({
     {
       id: "1",
       name: "John Doe",
-      avatar: "/condominio.png",
+      avatar: "/user.png",
     },
   ];
 

@@ -1,13 +1,11 @@
-import Image from "next/image";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
-interface List01Props {
+interface CondominiumInfoProps {
   className?: string;
 }
 
-export default function List01({ className }: List01Props) {
+export default function CondominiumInfo({ className }: CondominiumInfoProps) {
   return (
     <div
       className={cn(

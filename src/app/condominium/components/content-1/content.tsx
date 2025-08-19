@@ -2,7 +2,7 @@ import { getAdmins } from "@/actions/get-admins";
 import { getBuildingManager } from "@/actions/get-building-manager";
 import { getCounselors } from "@/actions/get-counselors";
 
-import List01 from "./list-01";
+import CondominiumInfo from "./condominium-info";
 import UserList from "./user-list";
 
 export async function Content() {
@@ -19,7 +19,7 @@ export async function Content() {
             Informações do Condomínio
           </h2>
           <div className="flex-1">
-            <List01 className="h-full" />
+            <CondominiumInfo className="h-full" />
           </div>
         </div>
         <div className="flex flex-col rounded-xl bg-white p-6 dark:border-[#1F1F23] dark:bg-[#0F0F12]">

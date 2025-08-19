@@ -49,7 +49,6 @@ export default function Profile01({
               className="rounded-full object-cover ring-4 ring-white dark:ring-zinc-900"
             />
           </div>
-
           {/* Profile Info */}
           <div className="flex-1">
             <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
@@ -82,7 +81,6 @@ export default function Profile01({
               </div>
             </Link>
           ))}
-
           <button
             type="button"
             className="flex w-full items-center justify-between rounded-lg p-2 transition-colors duration-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"

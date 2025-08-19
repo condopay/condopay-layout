@@ -58,7 +58,7 @@ export default function Sidebar() {
         <Menu className="h-5 w-5 text-gray-600 dark:text-gray-300" />
       </button>
       <nav
-        className={`fixed inset-y-0 left-0 z-[70] w-64 transform border-r border-gray-200 bg-white transition-transform duration-200 ease-in-out lg:static lg:w-64 lg:translate-x-0 dark:border-[#1F1F23] dark:bg-[#0F0F12] ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"} `}
+        className={`fixed inset-y-0 left-0 z-[70] w-64 transform bg-white transition-transform duration-200 ease-in-out lg:static lg:w-64 lg:translate-x-0 dark:border-[#1F1F23] dark:bg-[#0F0F12] ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"} `}
       >
         <div className="flex h-full flex-col">
           {/* Logo */}
@@ -66,7 +66,7 @@ export default function Sidebar() {
             href="/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex h-16 items-center justify-center border-b border-gray-200 px-6 dark:border-[#1F1F23]"
+            className="flex h-16 items-center justify-center px-6 dark:border-[#1F1F23]"
           >
             <Image
               src="/logo.png"
@@ -92,7 +92,7 @@ export default function Sidebar() {
             </div>
           </div>
           {/* Footer */}
-          <div className="border-t border-gray-200 px-4 py-4 dark:border-[#1F1F23]">
+          <div className="px-4 py-4 dark:border-[#1F1F23]">
             <div className="space-y-1">
               <Button variant="outline" className="w-full">
                 Sair
