@@ -12,11 +12,10 @@ export async function getCounselors({ buildingId }: GetCounselorsSchema) {
       name: "Jane Doe",
       avatar: "/user.png",
     },
-
     {
       id: "3",
       name: "John Smith",
-      savatar: "/user.png",
+      avatar: "/user.png",
     },
   ];
 
