@@ -1,15 +1,23 @@
 "use client";
 
-import { Building2, Home, LogOut, type LucideIcon, Menu } from "lucide-react";
+import { Building2, Home, type LucideIcon, Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
 import { Button } from "../ui/button";
 
-const navItems = [
-  { href: "/painel", icon: Home, label: "Painel Gerencial" },
-  { href: "/condominio", icon: Building2, label: "Condomínios" },
+const menuItems = [
+  {
+    label: "Painel Gerencial",
+    icon: Home,
+    href: "/dashboard",
+  },
+  {
+    label: "Condomínio",
+    icon: Building2,
+    href: "/condominium",
+  },
 ];
 
 export default function Sidebar() {
@@ -53,6 +61,7 @@ export default function Sidebar() {
         className={`fixed inset-y-0 left-0 z-[70] w-64 transform border-r border-gray-200 bg-white transition-transform duration-200 ease-in-out lg:static lg:w-64 lg:translate-x-0 dark:border-[#1F1F23] dark:bg-[#0F0F12] ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"} `}
       >
         <div className="flex h-full flex-col">
+          {/* Logo */}
           <Link
             href="/"
             target="_blank"
@@ -61,19 +70,20 @@ export default function Sidebar() {
           >
             <Image
               src="/logo.png"
-              alt="Acme"
-              width={100}
-              height={100}
-              className="hidden flex-shrink-0 dark:flex"
+              alt="Logo"
+              width={120}
+              height={40}
+              priority
+              className="h-auto w-auto object-contain"
             />
           </Link>
-          {/* NAV LINKS */}
+          {/* Menu */}
           <div className="flex-1 overflow-y-auto px-4 py-4">
             <div className="space-y-6">
               <div>
                 <div className="space-y-1">
-                  {navItems.map((item) => (
-                    <NavItem key={item.href} href={item.href} icon={item.icon}>
+                  {menuItems.map((item) => (
+                    <NavItem key={item.label} href={item.href} icon={item.icon}>
                       {item.label}
                     </NavItem>
                   ))}
@@ -81,17 +91,17 @@ export default function Sidebar() {
               </div>
             </div>
           </div>
-          {/* LOGOUT */}
+          {/* Footer */}
           <div className="border-t border-gray-200 px-4 py-4 dark:border-[#1F1F23]">
             <div className="space-y-1">
-              <Button className="w-full cursor-pointer font-bold text-black">
-                <LogOut className="h-4 w-4" />
+              <Button variant="outline" className="w-full">
                 Sair
               </Button>
             </div>
           </div>
         </div>
       </nav>
+
       {isMobileMenuOpen && (
         <div
           className="bg-opacity-50 fixed inset-0 z-[65] bg-black lg:hidden"

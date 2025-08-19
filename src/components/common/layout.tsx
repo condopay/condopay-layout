@@ -1,5 +1,6 @@
 "use client";
 
+import { useTheme } from "next-themes";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 
@@ -11,18 +12,17 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
+  const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return null;
-  }
+  const currentTheme = mounted ? resolvedTheme : "dark";
 
   return (
-    <div className="flex h-screen">
+    <div className={`flex h-screen ${currentTheme === "dark" ? "dark" : ""}`}>
       <Sidebar />
       <div className="flex w-full flex-1 flex-col">
         <header className="h-16 border-b border-gray-200 dark:border-[#1F1F23]">
