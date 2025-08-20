@@ -28,7 +28,7 @@ export default function Layout({ children }: LayoutProps) {
         <header className="h-16 dark:border-[#1F1F23]">
           <TopNav />
         </header>
-        <main className="flex-1 overflow-auto rounded-tl-2xl border-2 bg-white p-6 dark:bg-[#0F0F12]">
+        <main className="flex-1 overflow-auto border-2 bg-white p-2 md:p-6 lg:rounded-tl-2xl dark:bg-[#0F0F12]">
           {children}
         </main>
       </div>

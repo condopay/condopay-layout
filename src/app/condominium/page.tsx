@@ -9,7 +9,7 @@ export default function PainelPage() {
   return (
     <Layout>
       <Tabs defaultValue="condominio">
-        <TabsList className="mb-6 grid w-full grid-cols-3">
+        <TabsList className="mb-4 grid w-full grid-cols-3">
           <TabsTrigger value="condominio" className="flex items-center gap-2">
             <Building2 className="h-4 w-4" />
             <span className="hidden md:block">Condomínio</span>
