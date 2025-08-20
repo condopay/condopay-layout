@@ -4,12 +4,13 @@ import Layout from "@/components/common/layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { Content } from "./components/content-1/content";
+import { TabUsers } from "./components/ta-users.tsx/tab-users";
 
 export default function PainelPage() {
   return (
     <Layout>
       <Tabs defaultValue="condominio">
-        <TabsList className="mb-4 grid w-full grid-cols-3">
+        <TabsList className="mb-4 grid w-full max-w-xl grid-cols-3">
           <TabsTrigger value="condominio" className="flex items-center gap-2">
             <Building2 className="h-4 w-4" />
             <span className="hidden md:block">Condomínio</span>
@@ -30,7 +31,7 @@ export default function PainelPage() {
           <h1>Unidades</h1>
         </TabsContent>
         <TabsContent value="usuarios">
-          <h1>Usuários</h1>
+          <TabUsers />
         </TabsContent>
       </Tabs>
     </Layout>
