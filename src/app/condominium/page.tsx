@@ -3,8 +3,8 @@ import { Building2, Home, Users } from "lucide-react";
 import Layout from "@/components/common/layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { Content } from "./components/content-1/content";
-import { TabUsers } from "./components/ta-users.tsx/tab-users";
+import { TabCondInfo } from "./components/tab-cond-info/tab-cond-info";
+import { TabUsers } from "./components/tab-users.tsx/tab-users";
 
 export default function PainelPage() {
   return (
@@ -25,7 +25,7 @@ export default function PainelPage() {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="condominio">
-          <Content />
+          <TabCondInfo />
         </TabsContent>
         <TabsContent value="unidades">
           <h1>Unidades</h1>

@@ -1,11 +1,11 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
-interface CondominiumInfoProps {
+interface CondInfoProps {
   className?: string;
 }
 
-export default function CondominiumInfo({ className }: CondominiumInfoProps) {
+export default function CondInfo({ className }: CondInfoProps) {
   return (
     <div
       className={cn(

@@ -2,10 +2,10 @@ import { getAdmins } from "@/actions/get-admins";
 import { getBuildingManager } from "@/actions/get-building-manager";
 import { getCounselors } from "@/actions/get-counselors";
 
-import CondominiumInfo from "./condominium-info";
+import CondInfo from "./cond-info";
 import UserList from "./user-list";
 
-export async function Content() {
+export async function TabCondInfo() {
   const { users: buildingManagers } = await getBuildingManager({
     buildingId: "1",
   });
@@ -21,7 +21,7 @@ export async function Content() {
             </h2>
           </div>
           <div className="flex-1">
-            <CondominiumInfo className="h-full" />
+            <CondInfo className="h-full" />
           </div>
         </div>
         <div className="flex flex-col rounded-xl bg-white p-4 dark:border-[#1F1F23] dark:bg-[#0F0F12]">
