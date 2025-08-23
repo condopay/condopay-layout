@@ -49,7 +49,7 @@ export function CreateUserDialog() {
       <DialogTrigger asChild>
         <Button variant="outline">
           <Plus className="h-4 w-4" />
-          Adicionar usuário
+          <span className="hidden md:block">Adicionar usuário</span>
         </Button>
       </DialogTrigger>
       <DialogContent>
