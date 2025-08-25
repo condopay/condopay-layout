@@ -23,11 +23,10 @@ export function TabUsers() {
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState<UsersSchema[]>([]);
   const [selectedUser, setSelectedUser] = useState<UsersSchema | null>(null);
-  const buildingId = "1"; // TODO: Obter do contexto ou props
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const { users } = await getUsers({ buildingId, search });
+      const { users } = await getUsers();
       setUsers(users);
     };
     fetchUsers();

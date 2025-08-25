@@ -11,8 +11,8 @@ export const usersSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Nome obrigatório"),
   email: z.email("Email inválido"),
-  role: z.enum(["admin", "user"]).default("user"),
-  status: z.enum(["active", "inactive"]).default("active"),
+  role: z.string(),
+  status: z.string(),
   avatarUrl: z.string().optional(),
   document: z
     .string()

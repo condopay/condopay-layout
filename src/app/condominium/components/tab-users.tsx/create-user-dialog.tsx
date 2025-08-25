@@ -24,7 +24,7 @@ import { Input } from "@/components/ui/input";
 
 const createUserSchema = z.object({
   name: z.string().min(1, "Nome obrigatório"),
-  email: z.string().email("Email inválido"),
+  email: z.email("Email inválido"),
   role: z.enum(["admin", "user"]),
   status: z.enum(["active", "inactive"]),
   avatarUrl: z.string().optional(),
@@ -87,7 +87,7 @@ export function CreateUserDialog() {
             className="flex min-h-0 flex-1 flex-col"
           >
             <div className="flex-1 space-y-4 overflow-y-auto pr-2">
-              {Object.entries(createUserSchema.shape).map(([key, value]) => {
+              {Object.entries(createUserSchema.shape).map(([key]) => {
                 if (key !== "id") {
                   return (
                     <FormField

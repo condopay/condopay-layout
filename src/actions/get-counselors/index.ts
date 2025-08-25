@@ -1,6 +1,4 @@
-import { type GetCounselorsSchema } from "./schema";
-
-export async function getCounselors({ buildingId }: GetCounselorsSchema) {
+export async function getCounselors() {
   const users = [
     {
       id: "1",

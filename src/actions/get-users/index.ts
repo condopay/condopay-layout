@@ -1,6 +1,4 @@
-import type { GetUsersSchema } from "./schema";
-
-export async function getUsers({ buildingId, search }: GetUsersSchema) {
+export async function getUsers() {
   const users = [
     {
       id: "1",
@@ -76,15 +74,5 @@ export async function getUsers({ buildingId, search }: GetUsersSchema) {
     },
   ];
 
-  let filteredUsers = users;
-
-  if (search) {
-    filteredUsers = users.filter(
-      (user) =>
-        user.name.toLowerCase().includes(search.toLowerCase()) ||
-        user.email.toLowerCase().includes(search.toLowerCase()),
-    );
-  }
-
-  return { users: filteredUsers };
+  return { users };
 }

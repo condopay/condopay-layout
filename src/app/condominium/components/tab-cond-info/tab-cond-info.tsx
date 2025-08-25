@@ -6,11 +6,9 @@ import CondInfo from "./cond-info";
 import UserList from "./user-list";
 
 export async function TabCondInfo() {
-  const { users: buildingManagers } = await getBuildingManager({
-    buildingId: "1",
-  });
-  const { users: admins } = await getAdmins({ buildingId: "1" });
-  const { users: counselors } = await getCounselors({ buildingId: "1" });
+  const { users: buildingManagers } = await getBuildingManager();
+  const { users: admins } = await getAdmins();
+  const { users: counselors } = await getCounselors();
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

@@ -1,6 +1,4 @@
-import { type GetAdminsSchema } from "./schema";
-
-export async function getAdmins({ buildingId }: GetAdminsSchema) {
+export async function getAdmins() {
   const users = [
     {
       id: "1",

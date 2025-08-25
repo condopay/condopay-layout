@@ -1,8 +1,4 @@
-import { type GetBuildingManagerSchema } from "./schema";
-
-export async function getBuildingManager({
-  buildingId,
-}: GetBuildingManagerSchema) {
+export async function getBuildingManager() {
   const users = [
     {
       id: "1",
