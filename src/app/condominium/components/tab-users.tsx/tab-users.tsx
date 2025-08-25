@@ -106,7 +106,7 @@ export function TabUsers() {
                   >
                     <TableCell>
                       <Avatar>
-                        <AvatarImage src={user.avatarUrl ?? ""} />
+                        <AvatarImage src={user.avatar_url ?? ""} />
                         <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
                       </Avatar>
                     </TableCell>
@@ -124,7 +124,7 @@ export function TabUsers() {
               <div className="flex justify-between gap-4 rounded-xl">
                 <div className="flex gap-4">
                   <Avatar className="hidden lg:block">
-                    <AvatarImage src={selectedUser.avatarUrl ?? ""} />
+                    <AvatarImage src={selectedUser.avatar_url ?? ""} />
                     <AvatarFallback>
                       {selectedUser.name?.charAt(0)}
                     </AvatarFallback>
@@ -198,13 +198,13 @@ export function TabUsers() {
                 <div className="flex flex-col gap-2">
                   <h1 className="text-sm text-zinc-500">Data de Nascimento</h1>
                   <p className="text-sm font-semibold">
-                    {selectedUser.birthDate}
+                    {selectedUser.birth_date?.toLocaleDateString()}
                   </p>
                 </div>
                 <div className="flex flex-col gap-2">
                   <h1 className="text-sm text-zinc-500">Estado Civil</h1>
                   <p className="text-sm font-semibold">
-                    {selectedUser.maritalStatus}
+                    {selectedUser.marital_status}
                   </p>
                 </div>
               </div>

@@ -1,4 +1,4 @@
-import { PrismaClient } from "../generated/prisma";
+import { MaritalStatus, PrismaClient, Role, Status } from "../generated/prisma";
 
 const prisma = new PrismaClient();
 
@@ -13,13 +13,13 @@ async function main() {
       name: "Administrador CondoPay",
       email: "admin@condopay.com",
       password: "admin123", // Em produção, isso deve ser hasheado
-      role: "admin",
-      status: "active",
+      role: Role.ADMIN,
+      status: Status.ACTIVE,
       document: "123.456.789-00",
       phone1: "+55 11 99999-9999",
       profession: "Administrador",
-      birthDate: "01/01/1980",
-      maritalStatus: "Casado",
+      birth_date: new Date("1980-01-01"),
+      marital_status: MaritalStatus.MARRIED,
     },
   });
 
@@ -31,13 +31,13 @@ async function main() {
       name: "João Silva",
       email: "sindico@condopay.com",
       password: "sindico123", // Em produção, isso deve ser hasheado
-      role: "building_manager",
-      status: "active",
+      role: Role.BUILDING_MANAGER,
+      status: Status.ACTIVE,
       document: "987.654.321-00",
       phone1: "+55 11 88888-8888",
       profession: "Engenheiro",
-      birthDate: "15/05/1975",
-      maritalStatus: "Casado",
+      birth_date: new Date("1975-05-15"),
+      marital_status: MaritalStatus.MARRIED,
     },
   });
 
@@ -49,13 +49,13 @@ async function main() {
       name: "Maria Santos",
       email: "conselheiro1@condopay.com",
       password: "conselheiro123", // Em produção, isso deve ser hasheado
-      role: "counselor",
-      status: "active",
+      role: Role.COUNSELOR,
+      status: Status.ACTIVE,
       document: "456.789.123-00",
       phone1: "+55 11 77777-7777",
       profession: "Advogada",
-      birthDate: "20/08/1982",
-      maritalStatus: "Solteira",
+      birth_date: new Date("1982-08-20"),
+      marital_status: MaritalStatus.SINGLE,
     },
   });
 
@@ -66,13 +66,13 @@ async function main() {
       name: "Pedro Oliveira",
       email: "conselheiro2@condopay.com",
       password: "conselheiro123", // Em produção, isso deve ser hasheado
-      role: "counselor",
-      status: "active",
+      role: Role.COUNSELOR,
+      status: Status.ACTIVE,
       document: "789.123.456-00",
       phone1: "+55 11 66666-6666",
       profession: "Contador",
-      birthDate: "10/12/1978",
-      maritalStatus: "Casado",
+      birth_date: new Date("1978-12-10"),
+      marital_status: MaritalStatus.MARRIED,
     },
   });
 
@@ -84,13 +84,13 @@ async function main() {
       name: "Ana Costa",
       email: "morador1@condopay.com",
       password: "morador123", // Em produção, isso deve ser hasheado
-      role: "resident",
-      status: "active",
+      role: Role.RESIDENT,
+      status: Status.ACTIVE,
       document: "321.654.987-00",
       phone1: "+55 11 55555-5555",
       profession: "Professora",
-      birthDate: "25/03/1985",
-      maritalStatus: "Casada",
+      birth_date: new Date("1985-03-25"),
+      marital_status: MaritalStatus.MARRIED,
     },
   });
 
@@ -101,13 +101,13 @@ async function main() {
       name: "Carlos Ferreira",
       email: "morador2@condopay.com",
       password: "morador123", // Em produção, isso deve ser hasheado
-      role: "resident",
-      status: "active",
+      role: Role.RESIDENT,
+      status: Status.ACTIVE,
       document: "654.987.321-00",
       phone1: "+55 11 44444-4444",
       profession: "Médico",
-      birthDate: "08/07/1979",
-      maritalStatus: "Divorciado",
+      birth_date: new Date("1979-07-08"),
+      marital_status: MaritalStatus.DIVORCED,
     },
   });
 

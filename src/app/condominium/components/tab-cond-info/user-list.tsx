@@ -3,17 +3,13 @@ import { UserPlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+import type { User } from "../../../../../generated/prisma";
 import { UserCard } from "./user-card";
 
-interface User {
-  id: string;
-  name: string;
-  avatar: string;
-}
 interface UserListProps {
   className?: string;
   title: string;
-  users: User[];
+  users: (Partial<User> & { id: string })[];
 }
 
 export default async function UserList({

@@ -8,27 +8,44 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ADMIN
+  BUILDING_MANAGER
+  COUNSELOR
+  RESIDENT
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+enum MaritalStatus {
+  SINGLE
+  MARRIED
+  DIVORCED
+  WIDOWED
+}
+
 model User {
-  id            String   @id @default(uuid())
-  name          String
-  email         String   @unique
-  password      String
-  phone         String?
-  role          String   @default("resident")
-  status        String   @default("active")
-  avatarUrl     String?
-  document      String?
-  rg            String?
-  ra            String?
-  phone1        String?
-  phone2        String?
-  whatsapp      String?
-  profession    String?
-  birthDate     String?
-  maritalStatus String?
-  buildingId    String?
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
+  id             String         @id @default(uuid())
+  name           String
+  email          String         @unique
+  password       String
+  avatar_url     String?
+  document       String         @unique
+  rg             String?
+  ra             String?
+  profession     String
+  birth_date     DateTime
+  phone1         String
+  phone2         String?
+  whatsapp       String?
+  role           Role           @default(RESIDENT)
+  status         Status         @default(ACTIVE)
+  marital_status MaritalStatus?
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @updatedAt
 
   @@map("users")
 }

@@ -1,14 +1,30 @@
-import { getAdmins } from "@/actions/get-admins";
-import { getBuildingManager } from "@/actions/get-building-manager";
-import { getCounselors } from "@/actions/get-counselors";
+import { prisma } from "@/lib/prisma";
 
+import { Role, Status } from "../../../../../generated/prisma";
 import CondInfo from "./cond-info";
 import UserList from "./user-list";
 
 export async function TabCondInfo() {
-  const { users: buildingManagers } = await getBuildingManager();
-  const { users: admins } = await getAdmins();
-  const { users: counselors } = await getCounselors();
+  const users = await prisma.user.findMany({
+    where: {
+      role: {
+        in: [Role.ADMIN, Role.BUILDING_MANAGER, Role.COUNSELOR],
+      },
+      status: Status.ACTIVE,
+    },
+    select: {
+      id: true,
+      name: true,
+      avatar_url: true,
+      role: true,
+    },
+  });
+  const buildingManagers = users.filter(
+    (user) => user.role === Role.BUILDING_MANAGER,
+  );
+  const admins = users.filter((user) => user.role === Role.ADMIN);
+  const counselors = users.filter((user) => user.role === Role.COUNSELOR);
+
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
