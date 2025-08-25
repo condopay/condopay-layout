@@ -22,25 +22,47 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-const formSchema = z.object({
-  name: z.string().min(1, { message: "Nome é obrigatório" }),
-  email: z.email({ message: "Email inválido" }),
-  phone: z.string().min(1, { message: "Telefone é obrigatório" }),
+const createUserSchema = z.object({
+  name: z.string().min(1, "Nome obrigatório"),
+  email: z.string().email("Email inválido"),
+  role: z.enum(["admin", "user"]),
+  status: z.enum(["active", "inactive"]),
+  avatarUrl: z.string().optional(),
+  document: z.string().min(1, "CPF obrigatório"),
+  rg: z.string().optional(),
+  ra: z.string().optional(),
+  phone1: z.string().min(1, "Telefone obrigatório"),
+  phone2: z.string().optional(),
+  whatsapp: z.string().optional(),
+  profession: z.string().min(1, "Profissão obrigatória"),
+  birthDate: z.string().min(1, "Data de nascimento obrigatória"),
+  maritalStatus: z.string().min(1, "Estado civil obrigatório"),
 });
 
-type FormValues = z.infer<typeof formSchema>;
+type CreateUserFormValues = z.infer<typeof createUserSchema>;
 
 export function CreateUserDialog() {
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<CreateUserFormValues>({
+    resolver: zodResolver(createUserSchema),
     defaultValues: {
       name: "",
       email: "",
-      phone: "",
+      role: "user",
+      status: "active",
+      avatarUrl: "",
+      document: "",
+      rg: "",
+      ra: "",
+      phone1: "",
+      phone2: "",
+      whatsapp: "",
+      profession: "",
+      birthDate: "",
+      maritalStatus: "",
     },
   });
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = (data: CreateUserFormValues) => {
     console.log(data);
   };
 
@@ -52,7 +74,7 @@ export function CreateUserDialog() {
           <span className="hidden md:block">Adicionar usuário</span>
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="flex max-h-[90vh] max-w-3xl flex-col">
         <DialogHeader>
           <DialogTitle>Adicionar usuário</DialogTitle>
           <DialogDescription>
@@ -62,45 +84,30 @@ export function CreateUserDialog() {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-4"
+            className="flex min-h-0 flex-1 flex-col"
           >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Nome" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Email" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Telefone</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Telefone" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <DialogFooter>
+            <div className="flex-1 space-y-4 overflow-y-auto pr-2">
+              {Object.entries(createUserSchema.shape).map(([key, value]) => {
+                if (key !== "id") {
+                  return (
+                    <FormField
+                      key={key}
+                      control={form.control}
+                      name={key as keyof typeof createUserSchema.shape}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{key}</FormLabel>
+                          <FormControl>
+                            <Input placeholder={key} {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  );
+                }
+              })}
+            </div>
+            <DialogFooter className="border-t pt-4">
               <Button type="submit">Adicionar usuário</Button>
             </DialogFooter>
           </form>
