@@ -9,28 +9,28 @@ import { TabUsers } from "./components/tab-users.tsx/tab-users";
 export default function PainelPage() {
   return (
     <Layout>
-      <Tabs defaultValue="condominio">
+      <Tabs defaultValue="users">
         <TabsList className="mb-4 grid w-full max-w-xl grid-cols-3">
-          <TabsTrigger value="condominio" className="flex items-center gap-2">
+          <TabsTrigger value="condominium" className="flex items-center gap-2">
             <Building2 className="h-4 w-4" />
             <span className="hidden md:block">Condomínio</span>
           </TabsTrigger>
-          <TabsTrigger value="unidades" className="flex items-center gap-2">
+          <TabsTrigger value="units" className="flex items-center gap-2">
             <Home className="h-4 w-4" />
             <span className="hidden md:block">Unidades</span>
           </TabsTrigger>
-          <TabsTrigger value="usuarios" className="flex items-center gap-2">
+          <TabsTrigger value="users" className="flex items-center gap-2">
             <Users className="h-4 w-4" />
             <span className="hidden md:block">Usuários</span>
           </TabsTrigger>
         </TabsList>
-        <TabsContent value="condominio">
+        <TabsContent value="condominium">
           <TabCondInfo />
         </TabsContent>
-        <TabsContent value="unidades">
+        <TabsContent value="units">
           <h1>Unidades</h1>
         </TabsContent>
-        <TabsContent value="usuarios">
+        <TabsContent value="users">
           <TabUsers />
         </TabsContent>
       </Tabs>
