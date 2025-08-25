@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertCircle, Key, Pencil, Trash } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -45,8 +45,12 @@ export function TabUsers() {
     initialData: [],
   });
 
-  const filteredUsers = users.filter((user) =>
-    user.name?.toLowerCase().includes(search.toLowerCase()),
+  const filteredUsers = useMemo(
+    () =>
+      users.filter((user) =>
+        user.name?.toLowerCase().includes(search.toLowerCase()),
+      ),
+    [users, search],
   );
 
   return (
