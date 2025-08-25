@@ -1,78 +1,52 @@
-export async function getUsers() {
-  const users = [
-    {
-      id: "1",
-      name: "John Doe",
-      email: "john.doe@example.com",
-      phone: "+55 11 99999-9999",
-      role: "admin",
-      status: "active",
-      avatarUrl: "https://github.com/shadcn.png",
-      document: "1234567890",
-      rg: "1234567890",
-      ra: "1234567890",
-      phone1: "+55 11 99999-9999",
-      phone2: "+55 11 88888-8888",
-      whatsapp: "+55 11 77777-7777",
-      profession: "Engenheiro",
-      birthDate: "10/10/1990",
-      maritalStatus: "Solteiro",
-    },
-    {
-      id: "2",
-      name: "Jane Doe",
-      email: "jane.doe@example.com",
-      phone: "+55 11 88888-8888",
-      role: "resident",
-      status: "active",
-      avatarUrl: "https://github.com/shadcn.png",
-      document: "1234567890",
-      rg: "1234567890",
-      ra: "1234567890",
-      phone1: "+55 11 99999-9999",
-      phone2: "+55 11 88888-8888",
-      whatsapp: "+55 11 77777-7777",
-      profession: "Engenheiro",
-      birthDate: "10/10/1990",
-      maritalStatus: "Solteiro",
-    },
-    {
-      id: "3",
-      name: "John Smith",
-      email: "john.smith@example.com",
-      phone: "+55 11 77777-7777",
-      role: "resident",
-      status: "inactive",
-      avatarUrl: "https://github.com/shadcn.png",
-      document: "1234567890",
-      rg: "1234567890",
-      ra: "1234567890",
-      phone1: "+55 11 99999-9999",
-      phone2: "+55 11 88888-8888",
-      whatsapp: "+55 11 77777-7777",
-      profession: "Engenheiro",
-      birthDate: "10/10/1990",
-      maritalStatus: "Solteiro",
-    },
-    {
-      id: "4",
-      name: "Maria Silva",
-      email: "maria.silva@example.com",
-      phone: "+55 11 66666-6666",
-      role: "resident",
-      status: "active",
-      avatarUrl: "https://github.com/shadcn.png",
-      document: "1234567890",
-      rg: "1234567890",
-      ra: "1234567890",
-      phone1: "+55 11 99999-9999",
-      phone2: "+55 11 88888-8888",
-      whatsapp: "+55 11 77777-7777",
-      profession: "Engenheiro",
-      birthDate: "10/10/1990",
-      maritalStatus: "Solteiro",
-    },
-  ];
+import { prisma } from "../../lib/prisma";
+import { GetUsersSchema } from "./schema";
 
-  return { users };
+export async function getUsers(params?: GetUsersSchema) {
+  try {
+    const where = {
+      ...(params?.buildingId && { buildingId: params.buildingId }),
+      ...(params?.search && {
+        OR: [
+          { name: { contains: params.search, mode: "insensitive" as const } },
+          { email: { contains: params.search, mode: "insensitive" as const } },
+          {
+            document: { contains: params.search, mode: "insensitive" as const },
+          },
+        ],
+      }),
+    };
+
+    const users = await prisma.user.findMany({
+      where,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        role: true,
+        status: true,
+        avatarUrl: true,
+        document: true,
+        rg: true,
+        ra: true,
+        phone1: true,
+        phone2: true,
+        whatsapp: true,
+        profession: true,
+        birthDate: true,
+        maritalStatus: true,
+        buildingId: true,
+        created_at: true,
+        updated_at: true,
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
+
+    return { users };
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    throw new Error("Failed to fetch users");
+  }
 }

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const getUsersSchema = z.object({
-  buildingId: z.string(),
+  buildingId: z.string().optional(),
   search: z.string().optional(),
 });
 

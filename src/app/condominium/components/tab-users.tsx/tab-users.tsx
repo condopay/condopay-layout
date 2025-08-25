@@ -3,8 +3,6 @@
 import { Key, Pencil, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { getUsers } from "@/actions/get-users";
-import type { UsersSchema } from "@/actions/get-users/schema";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,20 +15,41 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import type { User } from "../../../../../generated/prisma";
 import { CreateUserDialog } from "./create-user-dialog";
 
 export function TabUsers() {
   const [search, setSearch] = useState("");
-  const [users, setUsers] = useState<UsersSchema[]>([]);
-  const [selectedUser, setSelectedUser] = useState<UsersSchema | null>(null);
+  const [users, setUsers] = useState<Partial<User>[]>([]);
+  const [selectedUser, setSelectedUser] = useState<Partial<User> | null>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const { users } = await getUsers();
-      setUsers(users);
+      try {
+        const params = new URLSearchParams();
+        if (search) params.append("search", search);
+
+        const response = await fetch(`/api/users?${params}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          setUsers(data.users);
+        } else {
+          console.error("Error fetching users:", data.error);
+        }
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
     };
+
     fetchUsers();
   }, [search]);
+
+  const filterUsers = (users: Partial<User>[]) => {
+    return users.filter((user) =>
+      user.name?.toLowerCase().includes(search.toLowerCase()),
+    );
+  };
 
   return (
     <>
@@ -45,7 +64,7 @@ export function TabUsers() {
       </div>
       <div className="grid grid-cols-1 gap-4 px-2 py-4 md:grid-cols-3">
         <div className="col-span-1 rounded-xl p-4 dark:bg-zinc-900">
-          {users.length > 0 && (
+          {filterUsers(users).length > 0 && (
             <Table>
               <TableHeader>
                 <TableRow>
@@ -54,7 +73,7 @@ export function TabUsers() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {users.length === 0 ? (
+                {filterUsers(users).length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={5} className="py-8 text-center">
                       <div className="text-muted-foreground text-sm">
@@ -65,7 +84,7 @@ export function TabUsers() {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  users.map((user: UsersSchema) => (
+                  filterUsers(users).map((user) => (
                     <TableRow
                       key={user.id}
                       onClick={() => setSelectedUser(user)}
@@ -73,11 +92,13 @@ export function TabUsers() {
                     >
                       <TableCell>
                         <Avatar>
-                          <AvatarImage src={user.avatarUrl} />
-                          <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                          <AvatarImage src={user.avatarUrl ?? ""} />
+                          <AvatarFallback>
+                            {user.name?.charAt(0)}
+                          </AvatarFallback>
                         </Avatar>
                       </TableCell>
-                      <TableCell>{user.name}</TableCell>
+                      <TableCell>{user.name ?? ""}</TableCell>
                     </TableRow>
                   ))
                 )}
@@ -92,9 +113,9 @@ export function TabUsers() {
               <div className="flex justify-between gap-4 rounded-xl">
                 <div className="flex gap-4">
                   <Avatar className="hidden lg:block">
-                    <AvatarImage src={selectedUser.avatarUrl} />
+                    <AvatarImage src={selectedUser.avatarUrl ?? ""} />
                     <AvatarFallback>
-                      {selectedUser.name.charAt(0)}
+                      {selectedUser.name?.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
                   <h1 className="text-lg font-medium">{selectedUser.name}</h1>
@@ -123,15 +144,21 @@ export function TabUsers() {
                 </div>
                 <div className="flex flex-col gap-2">
                   <h1 className="text-sm text-zinc-500">Email</h1>
-                  <p className="text-sm font-semibold">{selectedUser.email}</p>
+                  <p className="text-sm font-semibold">
+                    {selectedUser.email ?? ""}
+                  </p>
                 </div>
                 <div className="flex flex-col gap-2">
                   <h1 className="text-sm text-zinc-500">RG</h1>
-                  <p className="text-sm font-semibold">{selectedUser.rg}</p>
+                  <p className="text-sm font-semibold">
+                    {selectedUser.rg ?? ""}
+                  </p>
                 </div>
                 <div className="flex flex-col gap-2">
                   <h1 className="text-sm text-zinc-500">RA</h1>
-                  <p className="text-sm font-semibold">{selectedUser.ra}</p>
+                  <p className="text-sm font-semibold">
+                    {selectedUser.ra ?? ""}
+                  </p>
                 </div>
                 <div className="flex flex-col gap-2">
                   <h1 className="text-sm text-zinc-500">1º Telefone</h1>

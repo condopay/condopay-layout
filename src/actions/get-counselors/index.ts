@@ -1,21 +1,31 @@
-export async function getCounselors() {
-  const users = [
-    {
-      id: "1",
-      name: "John Doe",
-      avatar: "/user.png",
-    },
-    {
-      id: "2",
-      name: "Jane Doe",
-      avatar: "/user.png",
-    },
-    {
-      id: "3",
-      name: "John Smith",
-      avatar: "/user.png",
-    },
-  ];
+import { prisma } from "../../lib/prisma";
 
-  return { users };
+export async function getCounselors() {
+  try {
+    const users = await prisma.user.findMany({
+      where: {
+        role: "counselor",
+        status: "active",
+      },
+      select: {
+        id: true,
+        name: true,
+        avatarUrl: true,
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
+
+    const formattedUsers = users.map((user) => ({
+      id: user.id,
+      name: user.name,
+      avatar: user.avatarUrl || "/user.png",
+    }));
+
+    return { users: formattedUsers };
+  } catch (error) {
+    console.error("Error fetching counselors:", error);
+    throw new Error("Failed to fetch counselors");
+  }
 }
