@@ -1,11 +1,12 @@
 "use client";
 
-import { Key, Pencil, Trash } from "lucide-react";
-import { useEffect, useState } from "react";
+import { AlertCircle, Key, Pencil, Trash } from "lucide-react";
+import { useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -14,42 +15,39 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useUsers } from "@/hooks/queries/use-users";
 
 import type { User } from "../../../../../generated/prisma";
 import { CreateUserDialog } from "./create-user-dialog";
 
+function UserSkeleton() {
+  return (
+    <TableRow>
+      <TableCell>
+        <Skeleton className="h-10 w-10 rounded-full" />
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-4 w-32" />
+      </TableCell>
+    </TableRow>
+  );
+}
+
 export function TabUsers() {
   const [search, setSearch] = useState("");
-  const [users, setUsers] = useState<Partial<User>[]>([]);
   const [selectedUser, setSelectedUser] = useState<Partial<User> | null>(null);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const params = new URLSearchParams();
-        if (search) params.append("search", search);
+  const {
+    data: users,
+    isError,
+    isPending,
+  } = useUsers({
+    initialData: [],
+  });
 
-        const response = await fetch(`/api/users?${params}`);
-        const data = await response.json();
-
-        if (response.ok) {
-          setUsers(data.users);
-        } else {
-          console.error("Error fetching users:", data.error);
-        }
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
-
-    fetchUsers();
-  }, [search]);
-
-  const filterUsers = (users: Partial<User>[]) => {
-    return users.filter((user) =>
-      user.name?.toLowerCase().includes(search.toLowerCase()),
-    );
-  };
+  const filteredUsers = users.filter((user) =>
+    user.name?.toLowerCase().includes(search.toLowerCase()),
+  );
 
   return (
     <>
@@ -64,7 +62,7 @@ export function TabUsers() {
       </div>
       <div className="grid grid-cols-1 gap-4 px-2 py-4 md:grid-cols-3">
         <div className="col-span-1 rounded-xl p-4 dark:bg-zinc-900">
-          {filterUsers(users).length > 0 && (
+          {isPending ? (
             <Table>
               <TableHeader>
                 <TableRow>
@@ -73,35 +71,48 @@ export function TabUsers() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filterUsers(users).length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={5} className="py-8 text-center">
-                      <div className="text-muted-foreground text-sm">
-                        {search
-                          ? "Nenhum usuário encontrado"
-                          : "Nenhum usuário cadastrado"}
-                      </div>
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <UserSkeleton key={index} />
+                ))}
+              </TableBody>
+            </Table>
+          ) : isError ? (
+            <div className="flex flex-col items-center justify-center space-y-3 py-8">
+              <AlertCircle className="h-8 w-8 text-red-500" />
+              <span className="text-muted-foreground text-sm">
+                Erro ao carregar usuários
+              </span>
+            </div>
+          ) : filteredUsers.length === 0 ? (
+            <div className="flex flex-col items-center justify-center space-y-3 py-8">
+              <span className="text-muted-foreground text-sm">
+                Nenhum usuário encontrado
+              </span>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Avatar</TableHead>
+                  <TableHead>Nome</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredUsers.map((user) => (
+                  <TableRow
+                    key={user.id}
+                    onClick={() => setSelectedUser(user)}
+                    className="hover:bg-muted/50 cursor-pointer"
+                  >
+                    <TableCell>
+                      <Avatar>
+                        <AvatarImage src={user.avatarUrl ?? ""} />
+                        <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
+                      </Avatar>
                     </TableCell>
+                    <TableCell>{user.name ?? ""}</TableCell>
                   </TableRow>
-                ) : (
-                  filterUsers(users).map((user) => (
-                    <TableRow
-                      key={user.id}
-                      onClick={() => setSelectedUser(user)}
-                      className="cursor-pointer"
-                    >
-                      <TableCell>
-                        <Avatar>
-                          <AvatarImage src={user.avatarUrl ?? ""} />
-                          <AvatarFallback>
-                            {user.name?.charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
-                      </TableCell>
-                      <TableCell>{user.name ?? ""}</TableCell>
-                    </TableRow>
-                  ))
-                )}
+                ))}
               </TableBody>
             </Table>
           )}
