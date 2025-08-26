@@ -2,7 +2,9 @@
 
 import { AlertCircle, Key, Pencil, Trash } from "lucide-react";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
+import { ConfirmAction } from "@/components/common/confirm-action";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,9 +17,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useDeleteUser } from "@/hooks/mutations/delete-user";
 import { useUsers } from "@/hooks/queries/use-users";
 
-import type { User } from "../../../../../generated/prisma";
+import { User } from "../../../../../generated/prisma";
 import { CreateUserDialog } from "./create-user-dialog";
 
 function UserSkeleton() {
@@ -35,22 +38,36 @@ function UserSkeleton() {
 
 export function TabUsers() {
   const [search, setSearch] = useState("");
-  const [selectedUser, setSelectedUser] = useState<Partial<User> | null>(null);
-
-  const {
-    data: users,
-    isError,
-    isPending,
-  } = useUsers({
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const getUsersQuery = useUsers({
     initialData: [],
   });
+  const deleteUserMutation = useDeleteUser();
+
+  const handleDeleteUser = (id: string) => {
+    deleteUserMutation.mutate(id, {
+      onSuccess: (data) => {
+        if (data.success) {
+          getUsersQuery.refetch();
+          setSelectedUser(null);
+          toast.success("Usuário removido com sucesso");
+        } else {
+          toast.error(data.error || "Erro ao remover usuário");
+        }
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error("Erro ao remover usuário");
+      },
+    });
+  };
 
   const filteredUsers = useMemo(
     () =>
-      users.filter((user) =>
+      getUsersQuery.data?.filter((user) =>
         user.name?.toLowerCase().includes(search.toLowerCase()),
       ),
-    [users, search],
+    [getUsersQuery.data, search],
   );
 
   return (
@@ -66,7 +83,7 @@ export function TabUsers() {
       </div>
       <div className="grid grid-cols-1 gap-4 px-2 py-4 md:grid-cols-3">
         <div className="col-span-1 rounded-xl p-4 dark:bg-zinc-900">
-          {isPending ? (
+          {getUsersQuery.isPending ? (
             <Table>
               <TableHeader>
                 <TableRow>
@@ -80,7 +97,7 @@ export function TabUsers() {
                 ))}
               </TableBody>
             </Table>
-          ) : isError ? (
+          ) : getUsersQuery.isError ? (
             <div className="flex flex-col items-center justify-center space-y-3 py-8">
               <AlertCircle className="h-8 w-8 text-red-500" />
               <span className="text-muted-foreground text-sm">
@@ -144,10 +161,19 @@ export function TabUsers() {
                     <Key className="h-4 w-4" />
                     <span className="hidden lg:block">Resetar senha</span>
                   </Button>
-                  <Button variant="outline" className="text-red-500">
-                    <Trash className="h-4 w-4" />
-                    <span className="hidden lg:block">Remover usuário</span>
-                  </Button>
+                  <ConfirmAction
+                    title="Remover usuário"
+                    description={`Tem certeza que deseja remover o usuário ${selectedUser.name}?`}
+                    confirmText="Remover"
+                    cancelText="Cancelar"
+                    variant="destructive"
+                    onConfirm={() => handleDeleteUser(selectedUser.id ?? "")}
+                  >
+                    <Button variant="outline" className="text-red-500">
+                      <Trash className="h-4 w-4" />
+                      <span className="hidden lg:block">Remover usuário</span>
+                    </Button>
+                  </ConfirmAction>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2 p-4">

@@ -6,6 +6,7 @@ import { NumberFormatValues, PatternFormat } from "react-number-format";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import type { CreateUserSchema } from "@/actions/create-user/schema";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -36,7 +37,7 @@ import { useCreateUser } from "@/hooks/mutations/create-user";
 
 import { MaritalStatus, Role, Status } from "../../../../../generated/prisma";
 
-const createUserSchema = z.object({
+const createUserFormSchema = z.object({
   name: z.string().min(1, "Nome obrigatório"),
   email: z.email("Email inválido"),
   role: z.enum(Role),
@@ -55,14 +56,14 @@ const createUserSchema = z.object({
   maritalStatus: z.enum(MaritalStatus),
 });
 
-type CreateUserFormValues = z.infer<typeof createUserSchema>;
+type CreateUserFormValues = z.infer<typeof createUserFormSchema>;
 
 export function CreateUserDialog() {
   const createUserMutation = useCreateUser();
   const [open, setOpen] = useState(false);
 
   const form = useForm<CreateUserFormValues>({
-    resolver: zodResolver(createUserSchema),
+    resolver: zodResolver(createUserFormSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -82,19 +83,22 @@ export function CreateUserDialog() {
   });
 
   const onSubmit = async (values: CreateUserFormValues) => {
-    await createUserMutation.mutateAsync(values, {
-      onSuccess: () => {
-        form.reset();
-        setOpen(false);
-        toast.success("Usuário criado com sucesso");
+    await createUserMutation.mutateAsync(
+      values as unknown as CreateUserSchema,
+      {
+        onSuccess: () => {
+          form.reset();
+          setOpen(false);
+          toast.success("Usuário criado com sucesso");
+        },
+        onError: (error) => {
+          toast.error("Erro ao criar usuário", {
+            description:
+              error instanceof Error ? error.message : "Erro desconhecido",
+          });
+        },
       },
-      onError: (error) => {
-        toast.error("Erro ao criar usuário", {
-          description:
-            error instanceof Error ? error.message : "Erro desconhecido",
-        });
-      },
-    });
+    );
   };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
