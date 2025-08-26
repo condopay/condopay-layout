@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, Key, Pencil, Trash } from "lucide-react";
+import { AlertCircle, Key, Pencil, Plus, Trash } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -37,12 +37,27 @@ function UserSkeleton() {
 }
 
 export function TabUsers() {
+  const [openUserDialog, setOpenUserDialog] = useState(false);
+  const [dialogMode, setDialogMode] = useState<"create" | "edit">("create");
   const [search, setSearch] = useState("");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [userToEdit, setUserToEdit] = useState<User | null>(null);
   const getUsersQuery = useUsers({
     initialData: [],
   });
   const deleteUserMutation = useDeleteUser();
+
+  const handleCreateUser = () => {
+    setUserToEdit(null);
+    setDialogMode("create");
+    setOpenUserDialog(true);
+  };
+
+  const handleEditUser = (user: User) => {
+    setUserToEdit(user);
+    setDialogMode("edit");
+    setOpenUserDialog(true);
+  };
 
   const handleDeleteUser = (id: string) => {
     deleteUserMutation.mutate(id, {
@@ -79,7 +94,16 @@ export function TabUsers() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <CreateUserDialog />
+        <Button variant="outline" onClick={handleCreateUser}>
+          <Plus className="h-4 w-4" />
+          <span className="hidden md:block">Adicionar usuário</span>
+        </Button>
+        <CreateUserDialog
+          open={openUserDialog}
+          setOpen={setOpenUserDialog}
+          user={dialogMode === "edit" ? (userToEdit ?? undefined) : undefined}
+          isEdit={dialogMode === "edit"}
+        />
       </div>
       <div className="grid grid-cols-1 gap-4 px-2 py-4 md:grid-cols-3">
         <div className="col-span-1 rounded-xl p-4 dark:bg-zinc-900">
@@ -153,7 +177,10 @@ export function TabUsers() {
                   <h1 className="text-lg font-medium">{selectedUser.name}</h1>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline">
+                  <Button
+                    variant="outline"
+                    onClick={() => handleEditUser(selectedUser)}
+                  >
                     <Pencil className="h-4 w-4" />
                     <span className="hidden lg:block">Editar</span>
                   </Button>

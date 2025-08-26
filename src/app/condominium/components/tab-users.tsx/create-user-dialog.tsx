@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus } from "lucide-react";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { NumberFormatValues, PatternFormat } from "react-number-format";
 import { toast } from "sonner";
@@ -35,7 +34,12 @@ import {
 } from "@/components/ui/select";
 import { useCreateUser } from "@/hooks/mutations/create-user";
 
-import { MaritalStatus, Role, Status } from "../../../../../generated/prisma";
+import {
+  MaritalStatus,
+  Role,
+  Status,
+  type User,
+} from "../../../../../generated/prisma";
 
 const createUserFormSchema = z.object({
   name: z.string().min(1, "Nome obrigatório"),
@@ -58,28 +62,62 @@ const createUserFormSchema = z.object({
 
 type CreateUserFormValues = z.infer<typeof createUserFormSchema>;
 
-export function CreateUserDialog() {
+interface CreateUserDialogProps {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  isEdit?: boolean;
+  user?: User;
+  showTrigger?: boolean;
+}
+
+export function CreateUserDialog({
+  open,
+  setOpen,
+  isEdit = false,
+  user,
+  showTrigger = false,
+}: CreateUserDialogProps) {
   const createUserMutation = useCreateUser();
-  const [open, setOpen] = useState(false);
+
+  const defaultValues = {
+    name: "",
+    email: "",
+    role: "RESIDENT" as const,
+    status: "ACTIVE" as const,
+    avatarUrl: undefined,
+    document: "",
+    rg: "",
+    ra: "",
+    phone1: "",
+    phone2: "",
+    whatsapp: "",
+    profession: "",
+    birthDate: "",
+    maritalStatus: "SINGLE" as const,
+  };
 
   const form = useForm<CreateUserFormValues>({
     resolver: zodResolver(createUserFormSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      role: "RESIDENT",
-      status: "ACTIVE",
-      avatarUrl: "",
-      document: "",
-      rg: "",
-      ra: "",
-      phone1: "",
-      phone2: "",
-      whatsapp: "",
-      profession: "",
-      birthDate: "",
-      maritalStatus: "SINGLE",
-    },
+    defaultValues,
+    values:
+      isEdit && user
+        ? {
+            name: user.name ?? "",
+            email: user.email ?? "",
+            role: user.role ?? "RESIDENT",
+            status: user.status ?? "ACTIVE",
+            avatarUrl: user.avatar_url ?? undefined,
+            document: user.document ?? "",
+            rg: user.rg ?? "",
+            ra: user.ra ?? "",
+            phone1: user.phone1 ?? "",
+            phone2: user.phone2 ?? "",
+            whatsapp: user.whatsapp ?? "",
+            profession: user.profession ?? "",
+            birthDate: user.birth_date?.toLocaleDateString("pt-BR") ?? "",
+            maritalStatus: user.marital_status ?? "SINGLE",
+          }
+        : undefined,
   });
 
   const onSubmit = async (values: CreateUserFormValues) => {
@@ -102,17 +140,23 @@ export function CreateUserDialog() {
   };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline">
-          <Plus className="h-4 w-4" />
-          <span className="hidden md:block">Adicionar usuário</span>
-        </Button>
-      </DialogTrigger>
+      {showTrigger && (
+        <DialogTrigger asChild>
+          <Button variant="outline">
+            <Plus className="h-4 w-4" />
+            <span className="hidden md:block">Adicionar usuário</span>
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="flex max-h-[90vh] max-w-3xl flex-col">
         <DialogHeader>
-          <DialogTitle>Adicionar usuário</DialogTitle>
+          <DialogTitle>
+            {isEdit ? "Editar usuário" : "Adicionar usuário"}
+          </DialogTitle>
           <DialogDescription>
-            Adicione um novo usuário ao seu condomínio.
+            {isEdit
+              ? "Edite as informações do usuário"
+              : "Adicione um novo usuário ao seu condomínio."}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -373,6 +417,8 @@ export function CreateUserDialog() {
               >
                 {createUserMutation.isPending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
+                ) : isEdit ? (
+                  "Editar usuário"
                 ) : (
                   "Adicionar usuário"
                 )}
