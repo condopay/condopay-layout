@@ -1,12 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { NumberFormatValues, PatternFormat } from "react-number-format";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { createUser } from "@/actions/create-user";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -33,6 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useCreateUser } from "@/hooks/mutations/create-user";
 
 import { MaritalStatus, Role, Status } from "../../../../../generated/prisma";
 
@@ -58,6 +58,7 @@ const createUserSchema = z.object({
 type CreateUserFormValues = z.infer<typeof createUserSchema>;
 
 export function CreateUserDialog() {
+  const createUserMutation = useCreateUser();
   const [open, setOpen] = useState(false);
 
   const form = useForm<CreateUserFormValues>({
@@ -80,19 +81,20 @@ export function CreateUserDialog() {
     },
   });
 
-  const onSubmit = async (data: CreateUserFormValues) => {
-    try {
-      await createUser(data);
-      form.reset();
-      setOpen(false);
-      toast.success("Usuário criado com sucesso");
-    } catch (error) {
-      toast.error("Erro ao criar usuário", {
-        description:
-          error instanceof Error ? error.message : "Erro desconhecido",
-      });
-      console.error(error);
-    }
+  const onSubmit = async (values: CreateUserFormValues) => {
+    await createUserMutation.mutateAsync(values, {
+      onSuccess: () => {
+        form.reset();
+        setOpen(false);
+        toast.success("Usuário criado com sucesso");
+      },
+      onError: (error) => {
+        toast.error("Erro ao criar usuário", {
+          description:
+            error instanceof Error ? error.message : "Erro desconhecido",
+        });
+      },
+    });
   };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -361,9 +363,15 @@ export function CreateUserDialog() {
               <Button
                 type="submit"
                 className="text-sm font-semibold text-zinc-900"
-                disabled={form.formState.isSubmitting}
+                disabled={
+                  form.formState.isSubmitting || createUserMutation.isPending
+                }
               >
-                Adicionar usuário
+                {createUserMutation.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  "Adicionar usuário"
+                )}
               </Button>
             </DialogFooter>
           </form>
