@@ -1,9 +1,42 @@
-import { MaritalStatus, PrismaClient, Role, Status } from "../generated/prisma";
+import {
+  CondominiumType,
+  MaritalStatus,
+  PrismaClient,
+  Role,
+  Status,
+} from "../generated/prisma";
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log("🌱 Seeding database...");
+
+  const condominium = await prisma.condominium.upsert({
+    where: {
+      cnpj: "28.638.302/0001-09",
+      name: "Condomínio Edifício Princesa Isabel",
+    },
+    update: {},
+    create: {
+      cnpj: "28.638.302/0001-09",
+      name: "Condomínio Edifício Princesa Isabel",
+      phone: "+55 11 99999-9999",
+      condominium_type: CondominiumType.APARTMENT,
+      address: {
+        create: {
+          street: "Rua das Flores",
+          number: "123",
+          complement: "Apto 101",
+          neighborhood: "Jardim",
+          city: "São Paulo",
+          state: "SP",
+          zip_code: "1234567890",
+          country: "Brasil",
+        },
+      },
+    },
+  });
+  console.log("✅ Condominium created successfully!");
 
   // Create admin users
   const admin = await prisma.user.upsert({
@@ -20,6 +53,7 @@ async function main() {
       profession: "Administrador",
       birth_date: new Date("1980-01-01"),
       marital_status: MaritalStatus.MARRIED,
+      condominium_id: condominium.id,
     },
   });
 
@@ -38,6 +72,7 @@ async function main() {
       profession: "Engenheiro",
       birth_date: new Date("1975-05-15"),
       marital_status: MaritalStatus.MARRIED,
+      condominium_id: condominium.id,
     },
   });
 
@@ -56,6 +91,7 @@ async function main() {
       profession: "Advogada",
       birth_date: new Date("1982-08-20"),
       marital_status: MaritalStatus.SINGLE,
+      condominium_id: condominium.id,
     },
   });
 
@@ -73,6 +109,7 @@ async function main() {
       profession: "Contador",
       birth_date: new Date("1978-12-10"),
       marital_status: MaritalStatus.MARRIED,
+      condominium_id: condominium.id,
     },
   });
 
@@ -91,6 +128,7 @@ async function main() {
       profession: "Professora",
       birth_date: new Date("1985-03-25"),
       marital_status: MaritalStatus.MARRIED,
+      condominium_id: condominium.id,
     },
   });
 
@@ -108,6 +146,7 @@ async function main() {
       profession: "Médico",
       birth_date: new Date("1979-07-08"),
       marital_status: MaritalStatus.DIVORCED,
+      condominium_id: condominium.id,
     },
   });
 

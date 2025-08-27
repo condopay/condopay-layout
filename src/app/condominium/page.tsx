@@ -9,7 +9,7 @@ import { TabUsers } from "./components/tab-users.tsx/tab-users";
 export default function PainelPage() {
   return (
     <Layout>
-      <Tabs defaultValue="users">
+      <Tabs defaultValue="condominium">
         <TabsList className="mb-4 grid w-full max-w-xl grid-cols-3">
           <TabsTrigger value="condominium" className="flex items-center gap-2">
             <Building2 className="h-4 w-4" />

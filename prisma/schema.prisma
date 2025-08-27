@@ -27,6 +27,12 @@ enum MaritalStatus {
   WIDOWED
 }
 
+enum CondominiumType {
+  APARTMENT
+  HOUSE
+  COMMERCIAL
+}
+
 model User {
   id             String         @id @default(uuid())
   name           String
@@ -46,6 +52,36 @@ model User {
   marital_status MaritalStatus?
   created_at     DateTime       @default(now())
   updated_at     DateTime       @updatedAt
+  condominium    Condominium?   @relation(fields: [condominium_id], references: [id])
+  condominium_id String?
 
   @@map("users")
+}
+
+model Address {
+  id             String      @id @default(uuid())
+  street         String
+  number         String
+  complement     String?
+  neighborhood   String
+  city           String
+  state          String
+  zip_code       String
+  country        String
+  condominium    Condominium @relation(fields: [condominium_id], references: [id])
+  condominium_id String      @unique
+
+  @@map("addresses")
+}
+
+model Condominium {
+  id               String          @id @default(uuid())
+  cnpj             String          @unique
+  name             String
+  phone            String
+  condominium_type CondominiumType
+  address          Address?
+  users            User[]
+
+  @@map("condominiums")
 }
