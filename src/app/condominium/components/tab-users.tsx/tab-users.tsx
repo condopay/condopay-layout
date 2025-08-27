@@ -42,28 +42,23 @@ export function TabUsers() {
   const [search, setSearch] = useState("");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [userToEdit, setUserToEdit] = useState<User | null>(null);
-  const getUsersQuery = useUsers({
-    initialData: [],
-  });
   const deleteUserMutation = useDeleteUser();
-
+  const { data: usersData, isLoading, isError, refetch } = useUsers();
   const handleCreateUser = () => {
     setUserToEdit(null);
     setDialogMode("create");
     setOpenUserDialog(true);
   };
-
   const handleEditUser = (user: User) => {
     setUserToEdit(user);
     setDialogMode("edit");
     setOpenUserDialog(true);
   };
-
   const handleDeleteUser = (id: string) => {
     deleteUserMutation.mutate(id, {
       onSuccess: (data) => {
         if (data.success) {
-          getUsersQuery.refetch();
+          refetch();
           setSelectedUser(null);
           toast.success("Usuário removido com sucesso");
         } else {
@@ -76,15 +71,13 @@ export function TabUsers() {
       },
     });
   };
-
   const filteredUsers = useMemo(
     () =>
-      getUsersQuery.data?.filter((user) =>
+      usersData?.filter((user) =>
         user.name?.toLowerCase().includes(search.toLowerCase()),
       ),
-    [getUsersQuery.data, search],
+    [usersData, search],
   );
-
   return (
     <>
       <div className="flex items-center justify-between rounded-xl px-2 py-4">
@@ -107,7 +100,7 @@ export function TabUsers() {
       </div>
       <div className="grid grid-cols-1 gap-4 px-2 py-4 md:grid-cols-3">
         <div className="col-span-1 rounded-xl p-4 dark:bg-zinc-900">
-          {getUsersQuery.isPending ? (
+          {isLoading ? (
             <Table>
               <TableHeader>
                 <TableRow>
@@ -121,14 +114,14 @@ export function TabUsers() {
                 ))}
               </TableBody>
             </Table>
-          ) : getUsersQuery.isError ? (
+          ) : isError ? (
             <div className="flex flex-col items-center justify-center space-y-3 py-8">
               <AlertCircle className="h-8 w-8 text-red-500" />
               <span className="text-muted-foreground text-sm">
                 Erro ao carregar usuários
               </span>
             </div>
-          ) : filteredUsers.length === 0 ? (
+          ) : filteredUsers?.length === 0 ? (
             <div className="flex flex-col items-center justify-center space-y-3 py-8">
               <span className="text-muted-foreground text-sm">
                 Nenhum usuário encontrado
@@ -143,7 +136,7 @@ export function TabUsers() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredUsers.map((user) => (
+                {filteredUsers?.map((user) => (
                   <TableRow
                     key={user.id}
                     onClick={() => setSelectedUser(user)}

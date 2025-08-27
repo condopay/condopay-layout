@@ -6,6 +6,16 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import type { CreateUserSchema } from "@/actions/create-user/schema";
+import { createUserSchema } from "@/actions/create-user/schema";
+
+const createUserFormSchema = createUserSchema.omit({ birthDate: true }).extend({
+  birthDate: z
+    .string()
+    .min(1, "Data de nascimento obrigatória")
+    .regex(/^\d{2}\/\d{2}\/\d{4}$/, "Formato de data inválido (dd/MM/yyyy)"),
+});
+
+type CreateUserFormValues = z.infer<typeof createUserFormSchema>;
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -41,27 +51,6 @@ import {
   type User,
 } from "../../../../../generated/prisma";
 
-const createUserFormSchema = z.object({
-  name: z.string().min(1, "Nome obrigatório"),
-  email: z.email("Email inválido"),
-  role: z.enum(Role),
-  status: z.enum(Status),
-  avatarUrl: z.string().optional(),
-  document: z.string().min(1, "CPF obrigatório"),
-  rg: z.string().optional(),
-  ra: z.string().optional(),
-  phone1: z.string().min(1, "Telefone obrigatório"),
-  phone2: z.string().optional(),
-  whatsapp: z.string().optional(),
-  profession: z.string().min(1, "Profissão obrigatória"),
-  birthDate: z
-    .string()
-    .regex(/^\d{2}\/\d{2}\/\d{4}$/, "Formato de data inválido (dd/MM/yyyy)"),
-  maritalStatus: z.enum(MaritalStatus),
-});
-
-type CreateUserFormValues = z.infer<typeof createUserFormSchema>;
-
 interface CreateUserDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -79,33 +68,31 @@ export function CreateUserDialog({
 }: CreateUserDialogProps) {
   const createUserMutation = useCreateUser();
 
-  const defaultValues = {
-    name: "",
-    email: "",
-    role: "RESIDENT" as const,
-    status: "ACTIVE" as const,
-    avatarUrl: undefined,
-    document: "",
-    rg: "",
-    ra: "",
-    phone1: "",
-    phone2: "",
-    whatsapp: "",
-    profession: "",
-    birthDate: "",
-    maritalStatus: "SINGLE" as const,
-  };
-
   const form = useForm<CreateUserFormValues>({
     resolver: zodResolver(createUserFormSchema),
-    defaultValues,
+    defaultValues: {
+      name: "",
+      email: "",
+      role: Role.RESIDENT,
+      status: Status.ACTIVE,
+      avatarUrl: undefined,
+      document: "",
+      rg: "",
+      ra: "",
+      phone1: "",
+      phone2: "",
+      whatsapp: "",
+      profession: "",
+      birthDate: "",
+      maritalStatus: MaritalStatus.SINGLE,
+    },
     values:
       isEdit && user
         ? {
             name: user.name ?? "",
             email: user.email ?? "",
             role: user.role ?? "RESIDENT",
-            status: user.status ?? "ACTIVE",
+            status: user.status ?? Status.ACTIVE,
             avatarUrl: user.avatar_url ?? undefined,
             document: user.document ?? "",
             rg: user.rg ?? "",
@@ -115,28 +102,37 @@ export function CreateUserDialog({
             whatsapp: user.whatsapp ?? "",
             profession: user.profession ?? "",
             birthDate: user.birth_date?.toLocaleDateString("pt-BR") ?? "",
-            maritalStatus: user.marital_status ?? "SINGLE",
+            maritalStatus: user.marital_status ?? MaritalStatus.SINGLE,
           }
         : undefined,
   });
 
-  const onSubmit = async (values: CreateUserFormValues) => {
-    await createUserMutation.mutateAsync(
-      values as unknown as CreateUserSchema,
-      {
-        onSuccess: () => {
-          form.reset();
-          setOpen(false);
-          toast.success("Usuário criado com sucesso");
-        },
-        onError: (error) => {
-          toast.error("Erro ao criar usuário", {
-            description:
-              error instanceof Error ? error.message : "Erro desconhecido",
-          });
-        },
-      },
+  const onSubmit = (values: CreateUserFormValues) => {
+    const [day, month, year] = values.birthDate.split("/");
+    const birthDate = new Date(
+      parseInt(year),
+      parseInt(month) - 1,
+      parseInt(day),
     );
+
+    const createUserData: CreateUserSchema = {
+      ...values,
+      birthDate,
+    };
+
+    createUserMutation.mutate(createUserData, {
+      onSuccess: () => {
+        form.reset();
+        setOpen(false);
+        toast.success("Usuário criado com sucesso");
+      },
+      onError: (error) => {
+        toast.error("Erro ao criar usuário", {
+          description:
+            error instanceof Error ? error.message : "Erro desconhecido",
+        });
+      },
+    });
   };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -164,7 +160,7 @@ export function CreateUserDialog({
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex min-h-0 flex-1 flex-col"
           >
-            <div className="flex-1 gap-4 space-y-4 overflow-y-auto pr-2 md:grid md:grid-cols-2">
+            <div className="flex-1 gap-4 space-y-4 overflow-y-auto p-2">
               <FormField
                 control={form.control}
                 name="name"

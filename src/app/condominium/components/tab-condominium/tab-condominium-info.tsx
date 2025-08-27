@@ -1,10 +1,10 @@
 import { prisma } from "@/lib/prisma";
 
 import { Role, Status } from "../../../../../generated/prisma";
-import CondInfo from "./cond-info";
+import CondominiumInfo from "./condominium-info";
 import UserList from "./user-list";
 
-export async function TabCondInfo() {
+export async function TabCondominiumInfo() {
   const users = await prisma.user.findMany({
     where: {
       role: {
@@ -24,7 +24,6 @@ export async function TabCondInfo() {
   );
   const admins = users.filter((user) => user.role === Role.ADMIN);
   const counselors = users.filter((user) => user.role === Role.COUNSELOR);
-
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -35,7 +34,7 @@ export async function TabCondInfo() {
             </h2>
           </div>
           <div className="flex-1">
-            <CondInfo className="h-full" />
+            <CondominiumInfo className="h-full" />
           </div>
         </div>
         <div className="flex flex-col rounded-xl bg-white p-4 dark:border-[#1F1F23] dark:bg-[#0F0F12]">

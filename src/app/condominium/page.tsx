@@ -3,13 +3,13 @@ import { Building2, Home, Users } from "lucide-react";
 import Layout from "@/components/common/layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { TabCondInfo } from "./components/tab-cond-info/tab-cond-info";
+import { TabCondominiumInfo } from "./components/tab-condominium/tab-condominium-info";
 import { TabUsers } from "./components/tab-users.tsx/tab-users";
 
 export default function PainelPage() {
   return (
     <Layout>
-      <Tabs defaultValue="condominium">
+      <Tabs defaultValue="users">
         <TabsList className="mb-4 grid w-full max-w-xl grid-cols-3">
           <TabsTrigger value="condominium" className="flex items-center gap-2">
             <Building2 className="h-4 w-4" />
@@ -25,7 +25,7 @@ export default function PainelPage() {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="condominium">
-          <TabCondInfo />
+          <TabCondominiumInfo />
         </TabsContent>
         <TabsContent value="units">
           <h1>Unidades</h1>

@@ -6,8 +6,11 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { NumberFormatValues, PatternFormat } from "react-number-format";
 import { toast } from "sonner";
-import { z } from "zod";
 
+import {
+  type UpdateCondominiumSchema,
+  updateCondominiumSchema,
+} from "@/actions/update-condominium/schema";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -34,48 +37,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useUpdateCondominium } from "@/hooks/mutations/update-condominium";
 
-import type { Address, Condominium } from "../../../../../generated/prisma";
-
-const addressSchema = z.object({
-  street: z.string().min(1, "Rua obrigatória"),
-  number: z.string().min(1, "Número obrigatório"),
-  neighborhood: z.string().min(1, "Bairro obrigatório"),
-  complement: z.string().optional(),
-  city: z.string().min(1, "Cidade obrigatória"),
-  state: z.string().min(1, "Estado obrigatório"),
-  zip_code: z.string().min(1, "CEP obrigatório"),
-  country: z.string().min(1, "País obrigatório"),
-});
-
-const editCondominiumFormSchema = z.object({
-  name: z.string().min(1, "Nome obrigatório"),
-  cnpj: z
-    .string()
-    .min(18, "CNPJ obrigatório")
-    .regex(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/, "CNPJ inválido"),
-  phone: z.string().min(15, "Telefone obrigatório"),
-  condominiumType: z.string().min(1, "Tipo de condomínio obrigatório"),
-  address: addressSchema,
-});
-
-type EditCondominiumFormValues = z.infer<typeof editCondominiumFormSchema>;
+import {
+  type Address,
+  type Condominium,
+  CondominiumType,
+} from "../../../../../generated/prisma";
 
 interface EditCondominiumDialogProps {
   condominiumData: Condominium & { address: Address };
-  onSave?: (data: Condominium & { address: Address }) => void;
 }
-
 export function EditCondominiumDialog({
   condominiumData,
-  onSave,
 }: EditCondominiumDialogProps) {
   const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const form = useForm<EditCondominiumFormValues>({
-    resolver: zodResolver(editCondominiumFormSchema),
+  const form = useForm<UpdateCondominiumSchema>({
+    resolver: zodResolver(updateCondominiumSchema),
     defaultValues: {
+      id: condominiumData.id,
       name: condominiumData.name,
       cnpj: condominiumData.cnpj,
       phone: condominiumData.phone,
@@ -87,35 +67,26 @@ export function EditCondominiumDialog({
         complement: condominiumData.address?.complement ?? undefined,
         city: condominiumData.address?.city,
         state: condominiumData.address?.state,
-        zip_code: condominiumData.address?.zip_code,
+        zipCode: condominiumData.address?.zip_code,
         country: condominiumData.address?.country,
       },
     },
   });
-
-  const onSubmit = async (values: EditCondominiumFormValues) => {
-    setIsLoading(true);
-    try {
-      onSave?.({
-        ...condominiumData,
-        ...values,
-        address: {
-          ...condominiumData.address,
-          ...values.address,
-        },
-      });
-      setOpen(false);
-      toast.success("Informações do condomínio atualizadas com sucesso");
-    } catch (error) {
-      toast.error("Erro ao atualizar informações", {
-        description:
-          error instanceof Error ? error.message : "Erro desconhecido",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+  const updateCondominiumMutation = useUpdateCondominium();
+  const onSubmit = (values: UpdateCondominiumSchema) => {
+    updateCondominiumMutation.mutate(values, {
+      onSuccess: () => {
+        setOpen(false);
+        toast.success("Informações do condomínio atualizadas com sucesso");
+      },
+      onError: (error) => {
+        toast.error("Erro ao atualizar informações", {
+          description:
+            error instanceof Error ? error.message : "Erro desconhecido",
+        });
+      },
+    });
   };
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -136,7 +107,7 @@ export function EditCondominiumDialog({
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex min-h-0 flex-1 flex-col"
           >
-            <div className="flex-1 gap-4 space-y-4 overflow-y-auto pr-2">
+            <div className="flex-1 gap-4 space-y-4 overflow-y-auto p-2">
               <FormField
                 control={form.control}
                 name="name"
@@ -215,12 +186,15 @@ export function EditCondominiumDialog({
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent className="overflow-y-auto">
-                          <SelectItem value="Apartamento">
+                          <SelectItem value={CondominiumType.APARTMENT}>
                             Apartamento
                           </SelectItem>
-                          <SelectItem value="Casa">Casa</SelectItem>
-                          <SelectItem value="Comercial">Comercial</SelectItem>
-                          <SelectItem value="Misto">Misto</SelectItem>
+                          <SelectItem value={CondominiumType.HOUSE}>
+                            Casa
+                          </SelectItem>
+                          <SelectItem value={CondominiumType.COMMERCIAL}>
+                            Comercial
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>
@@ -308,7 +282,7 @@ export function EditCondominiumDialog({
                 />
                 <FormField
                   control={form.control}
-                  name="address.zip_code"
+                  name="address.zipCode"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>CEP*</FormLabel>
@@ -334,9 +308,12 @@ export function EditCondominiumDialog({
               <Button
                 type="submit"
                 className="text-sm font-semibold text-zinc-900"
-                disabled={form.formState.isSubmitting || isLoading}
+                disabled={
+                  form.formState.isSubmitting ||
+                  updateCondominiumMutation.isPending
+                }
               >
-                {isLoading ? (
+                {updateCondominiumMutation.isPending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   "Salvar alterações"

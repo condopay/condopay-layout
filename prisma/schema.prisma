@@ -68,7 +68,7 @@ model Address {
   state          String
   zip_code       String
   country        String
-  condominium    Condominium @relation(fields: [condominium_id], references: [id])
+  condominium    Condominium @relation(fields: [condominium_id], references: [id], onDelete: Cascade)
   condominium_id String      @unique
 
   @@map("addresses")

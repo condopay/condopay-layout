@@ -12,11 +12,7 @@ interface UserListProps {
   users: (Partial<User> & { id: string })[];
 }
 
-export default async function UserList({
-  className,
-  title,
-  users,
-}: UserListProps) {
+export default function UserList({ className, title, users }: UserListProps) {
   return (
     <>
       <div
